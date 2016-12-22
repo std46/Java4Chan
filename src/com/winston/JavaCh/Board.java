@@ -76,7 +76,21 @@ public class Board {
 		    this.url = urlGenerator.boardURL(protocol, name);
 		}
 		
-		
+		public List<Thread> getAllThreads(){//list of all thread objects
+			List<Thread> myList = new LinkedList<>();
+			JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(url + "/threads.json");
+	        for(Object o: jsonobj) {
+	            JSONObject page = (JSONObject) o;
+	            JSONArray pageArray = (JSONArray) page.get("threads");
+	            for (Object t: pageArray) {
+	            	JSONObject thread = (JSONObject) t;
+	                Thread newThread = new Thread(name, (long) thread.get("no"));
+	                myList.add(newThread);
+	            }
+	        }
+	        return myList;
+			
+		}
 		
 	    public List getAllThreadIds(){ //get list of all thread id's
 	        LinkedList threadIDs = new LinkedList();

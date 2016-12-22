@@ -9,10 +9,11 @@ import com.winston.JavaCh.Board.specBoard;
 public class Testing {
 	public static void main(String[] args){
 		System.out.println(Board.cache());
-		
-		List myList = Board.getAllThreadIds("g");
+		specBoard b = new specBoard("fit");
+		List myList = b.getAllThreads();
 		for(int i = 0; i < myList.size(); i++){
-		   System.out.println( myList.get(i));
+		   Thread t = (Thread) myList.get(i);
+		   System.out.println(t.getID() + " " + t.getBoard());
 		}
 		System.out.println(Board.cache());
 	}
