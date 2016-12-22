@@ -8,11 +8,12 @@ import com.winston.JavaCh.Board.specBoard;
 //used for testing instead of building this each time
 public class Testing {
 	public static void main(String[] args){
-		specBoard my = new specBoard("g");
+		System.out.println(Board.cache());
 		
 		List myList = Board.getAllThreadIds("g");
 		for(int i = 0; i < myList.size(); i++){
 		   System.out.println( myList.get(i));
 		}
+		System.out.println(Board.cache());
 	}
 }

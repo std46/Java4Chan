@@ -5,7 +5,7 @@ import java.util.List;
 
 //board object represents boards
 public class Board {
-
+    static int cache = 0;
 	static URL urlGenerator = new URL();
 	
 	public static Object getBoards(List<String> list){ //get specific boards
@@ -18,7 +18,9 @@ public class Board {
 		}
 		return myList;
 	}
-	
+	public static int cache(){
+		return cache;
+	}
 	public static Object allBoardsJSON(){ //returns the 4chan api's representation of all boards
 	    return JSONFetcher.vomit("https://a.4cdn.org/boards.json");
 	}
@@ -39,6 +41,7 @@ public class Board {
 	}
 	
 	public static List getAllThreadIds(String id){ //list of all threads in board
+	    cache = 1;
 		LinkedList threadIDs = new LinkedList();
 		specBoard board = new specBoard(id);
         JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(board.getURL() + "/threads.json");
@@ -72,6 +75,8 @@ public class Board {
 		    this.name = name;
 		    this.url = urlGenerator.boardURL(protocol, name);
 		}
+		
+		
 		
 	    public List getAllThreadIds(){ //get list of all thread id's
 	        LinkedList threadIDs = new LinkedList();
