@@ -1,11 +1,13 @@
 package com.winston.JavaCh;
 import org.json.simple.*;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 //board object represents boards
 public class Board {
-    static int cache = 0;
+	
 	static URL urlGenerator = new URL();
 	
 	public static Object getBoards(List<String> list){ //get specific boards
@@ -18,9 +20,7 @@ public class Board {
 		}
 		return myList;
 	}
-	public static int cache(){
-		return cache;
-	}
+	
 	public static Object allBoardsJSON(){ //returns the 4chan api's representation of all boards
 	    return JSONFetcher.vomit("https://a.4cdn.org/boards.json");
 	}
@@ -41,7 +41,7 @@ public class Board {
 	}
 	
 	public static List getAllThreadIds(String id){ //list of all threads in board
-	    cache = 1;
+	    
 		LinkedList threadIDs = new LinkedList();
 		specBoard board = new specBoard(id);
         JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(board.getURL() + "/threads.json");
@@ -62,6 +62,7 @@ public class Board {
 		String protocol = "https://";
 		String url;
 		
+		HashMap<Long, Thread> cache = new HashMap<>();
 		
 		public specBoard(String name){
 		    this(true, name);	
@@ -76,6 +77,20 @@ public class Board {
 		    this.url = urlGenerator.boardURL(protocol, name);
 		}
 		
+		public boolean hasThread(long id) { //checks if thread exists or no
+		    JSONObject value = (JSONObject)JSONFetcher.vomit(url + "/thread/" + id + ".json");
+		    if (value.containsKey("closed")){
+		    	if ((int)value.get("closed") == 1){
+		    		return false;
+		    	}
+		    }
+		    return true;
+		}
+		
+		public Thread getThread(long id){
+		    return new Thread(name, id);
+		}
+		
 		public List<Thread> getAllThreads(){//list of all thread objects
 			List<Thread> myList = new LinkedList<>();
 			JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(url + "/threads.json");
@@ -84,8 +99,16 @@ public class Board {
 	            JSONArray pageArray = (JSONArray) page.get("threads");
 	            for (Object t: pageArray) {
 	            	JSONObject thread = (JSONObject) t;
-	                Thread newThread = new Thread(name, (long) thread.get("no"));
-	                myList.add(newThread);
+	            	
+	            	Long id = (Long) thread.get("no");
+	            	
+	            	
+	            	Thread newThread = new Thread(name, (long) thread.get("no"));
+		            myList.add(newThread);
+		            cache.put(id, newThread);//adds thread to cache
+	            	
+	            	
+	                
 	            }
 	        }
 	        return myList;
