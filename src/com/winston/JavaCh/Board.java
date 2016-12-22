@@ -37,6 +37,22 @@ public class Board {
 		
 	    return boardsList;
 	}
+	
+	public static List getAllThreadIds(String id){ //list of all threads in board
+		LinkedList threadIDs = new LinkedList();
+		specBoard board = new specBoard(id);
+        JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(board.getURL() + "/threads.json");
+        for(Object o: jsonobj) {
+            JSONObject page = (JSONObject) o;
+            JSONArray pageArray = (JSONArray) page.get("threads");
+            for (Object t: pageArray) {
+            	JSONObject thread = (JSONObject) t;
+                threadIDs.add(thread.get("no"));
+            }
+        }
+        return threadIDs;
+		
+	}
 	public static class specBoard { //represents 4chan board
 		
 		String name; //the name. ex: g, fit, etc
@@ -50,12 +66,26 @@ public class Board {
 		
 		public specBoard(boolean https, String name){
 		    
-			if(!https) {
+			if(!https) { //swap protocols if necessary
 			    protocol = "http://";
 			}
 		    this.name = name;
 		    this.url = urlGenerator.boardURL(protocol, name);
 		}
+		
+	    public List getAllThreadIds(){ //get list of all thread id's
+	        LinkedList threadIDs = new LinkedList();
+	        JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(url + "/threads.json");
+	        for(Object o: jsonobj) {
+	            JSONObject page = (JSONObject) o;
+	            JSONArray pageArray = (JSONArray) page.get("threads");
+	            for (Object t: pageArray) {
+	            	JSONObject thread = (JSONObject) t;
+	                threadIDs.add(thread.get("no"));
+	            }
+	        }
+	        return threadIDs;
+	    }
 		
 		public String getName(){
 			return this.name;
