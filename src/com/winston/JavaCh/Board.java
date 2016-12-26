@@ -8,7 +8,10 @@ import java.util.List;
 //board object represents boards
 public class Board {
 	
+	static JSONObject metadata;
 	static URL urlGenerator = new URL();
+	static boolean cache = true; //default setting
+	static int refresh = 300; //default time for cache to refresh an item in seconds 
 	
 	public static Object getBoards(List<String> list){ //get specific boards
 		
@@ -22,7 +25,10 @@ public class Board {
 	}
 	
 	public static Object allBoardsJSON(){ //returns the 4chan api's representation of all boards
-	    return JSONFetcher.vomit("https://a.4cdn.org/boards.json");
+		if(metadata == null) {
+			metadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
+		}
+	    return metadata;
 	}
 	
 	public static List<specBoard> allBoards(){ //list of all boards
@@ -42,7 +48,7 @@ public class Board {
 	
 	public static List getAllThreadIds(String id){ //list of all threads in board
 	    
-		LinkedList threadIDs = new LinkedList();
+		LinkedList<Long> threadIDs = new LinkedList<>();
 		specBoard board = new specBoard(id);
         JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(board.getURL() + "/threads.json");
         for(Object o: jsonobj) {
@@ -50,18 +56,31 @@ public class Board {
             JSONArray pageArray = (JSONArray) page.get("threads");
             for (Object t: pageArray) {
             	JSONObject thread = (JSONObject) t;
-                threadIDs.add(thread.get("no"));
+                threadIDs.add((Long) thread.get("no"));
             }
         }
         return threadIDs;
 		
 	}
+	
+	public static void cache(boolean decision) { //should cache be used? default is true
+		cache = decision;
+	}
+	
 	public static class specBoard { //represents 4chan board
 		
-		String name; //the name. ex: g, fit, etc
+		private String name; //the name. ex: g, fit, etc
 		String protocol = "https://";
-		String url;
+		private String url;
 		
+		private String title; //Ex: Technology, Fitness
+		private Boolean isWorksafe; //is the board "safe for work"
+		private int pageCount = 0;
+		private int threadsPerPage = 0;
+		private String description; //Ex: /g/ is for hardware and software
+		
+		long lastUpdate = 0;
+		private JSONArray jsonCache; //used for backup
 		HashMap<Long, Thread> cache = new HashMap<>();
 		
 		public specBoard(String name){
@@ -134,6 +153,61 @@ public class Board {
 		}
 		public String getURL(){
 			return this.url;
+		}
+		
+		public long populate(){ //populate all the fields
+			if(metadata == null) {
+				metadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
+			}
+		    JSONObject jsonObj = metadata; //get data for all boards
+		    JSONArray boards = (JSONArray) jsonObj.get("boards");
+		    JSONObject board = null;
+		    
+		    for (Object o : boards) { //narrow it down to our board
+		        board = (JSONObject) o;
+		        if (board.get("board").equals(name)){
+		            break;
+		        }
+		    }
+		    
+		    isWorksafe = ((long)board.get("ws_board") == 1) ? true: false;
+		    pageCount = (int) (long) board.get("pages");
+		    threadsPerPage = (int) (long) board.get("per_page");
+		    title = (String) board.get("title");
+		    description = (String) board.get("meta_description");
+		    
+		    return lastUpdate;
+		}
+		
+		public boolean isWorksafe(){
+		    if(isWorksafe == null) {
+		        populate();
+		    }
+		    return isWorksafe;
+		}
+		public int pageCount(){
+		    if(pageCount == 0) {
+		        populate();
+		    }
+		    return pageCount;
+		}
+		public int threadsPerPage(){
+		    if(threadsPerPage == 0) {
+		        populate();
+		    }
+		    return threadsPerPage;
+		}
+		public String title(){
+		    if(title == null) {
+		        populate();
+		    }
+		    return title;
+		}
+		public String description(){
+		    if(description == null) {
+		        populate();
+		    }
+		    return description;
 		}
 	}
 }
