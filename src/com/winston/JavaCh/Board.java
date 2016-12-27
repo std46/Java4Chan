@@ -131,11 +131,11 @@ public class Board {
 			return newThread;
 		}
 		
-		public List<Thread> getThreads(){
+		public List<Thread> getThreads(){ //default value is 1
 		    return getThreads(1);
 		}
-		public List<Thread> getThreads(int page){
-			if(page <= 0 || pageCount() < page) { //invalid page
+		public List<Thread> getThreads(int page){  //get all threads on specific page
+			if(page <= 0 || pageCount() < page) { //invalid page returns null
 			    return null;
 			}
 			List<Thread> myList = new LinkedList<>();

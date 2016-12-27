@@ -40,4 +40,7 @@ public class Post { //represents a 4chan post
 	public String date(){   //date and time. ex: 12\/24\/16(Sat)14:10:39
 		return (String) data.get("now");
 	}
+	public JSONObject getData(){
+		return data;
+	}
 }
