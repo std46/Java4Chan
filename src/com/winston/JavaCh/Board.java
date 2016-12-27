@@ -80,8 +80,8 @@ public class Board {
 		private String description; //Ex: /g/ is for hardware and software
 		
 		long lastUpdate = 0;
-		private JSONArray jsonCache; //used for backup
-		HashMap<Long, Thread> cache = new HashMap<>();
+		
+		HashMap<Integer, Thread> cache = new HashMap<>();
 		
 		public specBoard(String name){
 		    this(true, name);	
@@ -106,8 +106,48 @@ public class Board {
 		    return true;
 		}
 		
-		public Thread getThread(long id){
-		    return new Thread(name, id);
+		public Thread getThread(int id, boolean updateCached){
+			
+			Thread cachedThread = cache.get(new Integer(id));
+			if(cachedThread == null){ //not cached
+				System.out.println("heyhey " + id);
+			    Thread newThread = new Thread(name, id);
+			    cache.put(id, newThread);
+			    System.out.println(cache.containsKey(new Integer(id)));
+			    System.out.println(cache);
+			    return cache.get(id);
+			}
+			if(!updateCached){ //just return the cached thread if necessary
+				return cachedThread;
+			}
+			Thread newThread = new Thread(name, id);
+			if(newThread.is404()){ //return null on a 404ed thread
+				cache.remove(new Integer(id)); //remove thread from cache
+				return null;
+			}
+			//if here, the cache needs to be updated and the thread is not closed
+			
+			cache.put(new Integer(id), newThread);
+			return newThread;
+		}
+		
+		public List<Thread> getThreads(){
+		    return getThreads(1);
+		}
+		public List<Thread> getThreads(int page){
+			if(page <= 0 || pageCount() < page) { //invalid page
+			    return null;
+			}
+			List<Thread> myList = new LinkedList<>();
+			JSONObject jsonobj = (JSONObject) JSONFetcher.vomit(url + "/" + page + ".json");
+			
+			JSONArray threads = (JSONArray) jsonobj.get("threads");
+			for (Object t: threads) {
+				JSONArray posts = (JSONArray) ((JSONObject) t).get("posts");
+				myList.add(new Thread(name, (long)((JSONObject)posts.get(0)).get("no")));
+				
+			}
+			return myList;
 		}
 		
 		public List<Thread> getAllThreads(){//list of all thread objects
@@ -124,7 +164,7 @@ public class Board {
 	            	
 	            	Thread newThread = new Thread(name, (long) thread.get("no"));
 		            myList.add(newThread);
-		            cache.put(id, newThread);//adds thread to cache
+		            cache.put(new Integer((int) (long) id), newThread);//adds thread to cache
 	            	
 	            	
 	                
