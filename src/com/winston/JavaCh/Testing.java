@@ -3,6 +3,7 @@ package com.winston.JavaCh;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.winston.JavaCh.Board.specBoard;
@@ -12,12 +13,14 @@ public class Testing {
 	public static void main(String[] args){
 		
 		specBoard b = new specBoard("fit");
-		Thread stick = b.getThread(17018018);
 		
+		Thread heh = b.getThread(39790358, true);
 		
-		System.out.println(stick.isStickied);
-		System.out.println(stick.isStickied());
-		
+		List<File> postname = heh.fileList();
+		System.out.println(postname.size());
+		for(File f: postname){
+			System.out.println(f.url());
+		}
 		
 	}
 }

@@ -29,7 +29,9 @@ public class Thread { //represents a 4chan thread
 	
 	public Thread(String board, long id){
 	    this.id = id;
-	    this.board = board;	    
+	    this.board = board;	
+	    
+	    populate();
 	}
 	
 	public long getID(){
@@ -143,5 +145,39 @@ public class Thread { //represents a 4chan thread
 	        populate();
 	    }
 	    return imageLimit;
+	}
+	
+	public List<String> fileUrls(){
+		List<String> urls = new LinkedList<>();
+		for(Post p: postCache){
+			if(p.hasFile()){
+				urls.add(p.getFile().url());
+			}
+		}
+		return urls;
+	}
+	
+	public List<File> fileList(){
+	    List<File> files = new LinkedList<>();
+	    for(Post p : postCache){
+	    	if(p.hasFile()){
+	    		files.add(p.getFile());
+	    	}
+	    	
+	    }
+	    return files;
+	}
+	
+	public List<String> filenames(){
+		
+		List<String> filenames = new LinkedList<>();
+		for(Post p: postCache){
+		    if(p.hasFile()){
+		    	filenames.add(p.getFile().filename());
+		    }
+			
+		}
+		
+		return filenames;
 	}
 }

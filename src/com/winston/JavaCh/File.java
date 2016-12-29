@@ -45,9 +45,12 @@ public class File {
 	public boolean deleted(){ //was the file later deleted?
 	    return data.containsKey("filedeleted") && (int) (long) data.get("filedeleted") == 1;
 	}
+	public String filename(){
+		return (String) data.get("filename");
+	}
 	public String url(){
 						//http(s)://i.4cdn.org/board/tim.ext
-		return ""; //<<placeholder
+		return "https://i.4cdn.org/" + post.thread.getBoard() + "/" + data.get("tim") + extension(); //<<placeholder
 		
 	}
 

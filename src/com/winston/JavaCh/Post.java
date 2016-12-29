@@ -6,10 +6,15 @@ public class Post { //represents a 4chan post
 	
 	private JSONObject data; //the JSONObject for the post
 	Thread thread; //reference to it's thread
+	File file;
 	
 	public Post(Thread thread, JSONObject data){ 
 		this.data = data;
 		this.thread = thread;
+		
+		if(this.hasFile()){
+			file = new File(this);
+		}
 	}
 	
 	public long getPostID(){ //returns postID
@@ -42,5 +47,14 @@ public class Post { //represents a 4chan post
 	}
 	public JSONObject getData(){
 		return data;
+	}
+	
+	//File related methods
+	public boolean hasFile(){
+		return data.containsKey("filename");
+	}
+	
+	public File getFile(){
+		return file;
 	}
 }
