@@ -163,7 +163,6 @@ public class Thread { //represents a 4chan thread
 	    	if(p.hasFile()){
 	    		files.add(p.getFile());
 	    	}
-	    	
 	    }
 	    return files;
 	}
