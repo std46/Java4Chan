@@ -158,13 +158,13 @@ public class Thread { //represents a 4chan thread
 	}
 	
 	public List<File> fileList(){
-	    List<File> files = new LinkedList<>();
+	    List<File> fileList = new LinkedList<>();
 	    for(Post p : postCache){
 	    	if(p.hasFile()){
-	    		files.add(p.getFile());
+	    		fileList.add(p.getFile());
 	    	}
 	    }
-	    return files;
+	    return fileList;
 	}
 	
 	public List<String> filenames(){
