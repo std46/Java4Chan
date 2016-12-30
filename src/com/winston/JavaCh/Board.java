@@ -8,7 +8,7 @@ import java.util.List;
 //board object represents boards
 public class Board {
 	
-	static JSONObject metadata;
+	static JSONObject Allmetadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
 	static URL urlGenerator = new URL();
 	static boolean cache = true; //default setting
 	static int refresh = 300; //default time for cache to refresh an item in seconds 
@@ -25,10 +25,10 @@ public class Board {
 	}
 	
 	public static Object allBoardsJSON(){ //returns the 4chan api's representation of all boards
-		if(metadata == null) {
-			metadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
+		if(Allmetadata == null) {
+			Allmetadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
 		}
-	    return metadata;
+	    return Allmetadata;
 	}
 	
 	public static List<specBoard> allBoards(){ //list of all boards
@@ -69,6 +69,7 @@ public class Board {
 	
 	public static class specBoard { //represents 4chan board
 		
+		JSONObject metadata;
 		private String name; //the name. ex: g, fit, etc
 		String protocol = "https://";
 		private String url;
@@ -94,6 +95,16 @@ public class Board {
 			}
 		    this.name = name;
 		    this.url = urlGenerator.boardURL(protocol, name);
+		    
+		    JSONObject jsonObj = Allmetadata; //get data for all boards
+		    JSONArray boards = (JSONArray) jsonObj.get("boards");
+		    
+		    for (Object o : boards) { //narrow it down to our board
+		        metadata = (JSONObject) o;
+		        if (metadata.get("board").equals(name)){
+		            break;
+		        }
+		    }
 		}
 		
 		public boolean hasThread(long id) { //checks if thread exists or no
@@ -220,10 +231,10 @@ public class Board {
 		}
 		
 		public boolean isWorksafe(){
-		    if(isWorksafe == null) {
-		        populate();
+		    if(metadata == null){
+		    	return false;
 		    }
-		    return isWorksafe;
+		    return (long) metadata.get("ws_board") == 1;
 		}
 		public int pageCount(){
 		    if(pageCount == 0) {
@@ -248,6 +259,16 @@ public class Board {
 		        populate();
 		    }
 		    return description;
+		}
+		
+		public void refreshCache(){
+			clearCache();
+			getAllThreads();
+			
+		}
+		
+		public void clearCache(){
+			cache = new HashMap<Integer, Thread>();
 		}
 	}
 }

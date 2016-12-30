@@ -20,8 +20,6 @@ public class Thread { //represents a 4chan thread
     private boolean bumpLimit = false;  //has it hit the bumplimit
     private boolean imageLimit = false; //has it hit the imagelimit
     
-    int customSpoiler = 0;
-    
     Post OriginalPost;		//the OP of the thread
     
 	
@@ -146,6 +144,23 @@ public class Thread { //represents a 4chan thread
 	    }
 	    return imageLimit;
 	}
+	public int customSpoiler(){ //#custom spoilers
+	    if(posts == null){
+	    	populate();
+	    }
+	    return (int) ((JSONObject) posts.get(0)).getOrDefault("custom_spoiler", 0);
+	}
+	
+	
+	public List<String> thumbUrls(){
+		List<String> urls = new LinkedList<>();
+		for(Post p: postCache){
+			if(p.hasFile()){
+				urls.add(p.getFile().thumbUrl());
+			}
+		}
+		return urls;
+	}
 	
 	public List<String> fileUrls(){
 		List<String> urls = new LinkedList<>();
@@ -168,7 +183,6 @@ public class Thread { //represents a 4chan thread
 	}
 	
 	public List<String> filenames(){
-		
 		List<String> filenames = new LinkedList<>();
 		for(Post p: postCache){
 		    if(p.hasFile()){
@@ -178,5 +192,15 @@ public class Thread { //represents a 4chan thread
 		}
 		
 		return filenames;
+	}
+	
+	public List<String> thumbnames(){
+		List<String> thumbnames = new LinkedList<>();
+		for(Post p: postCache){
+			if(p.hasFile()){
+				thumbnames.add(p.getFile().thumbName());
+			}
+		}
+		return thumbnames;
 	}
 }

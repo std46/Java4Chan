@@ -45,13 +45,24 @@ public class File {
 	public boolean deleted(){ //was the file later deleted?
 	    return data.containsKey("filedeleted") && (int) (long) data.get("filedeleted") == 1;
 	}
-	public String filename(){
-		return (String) data.get("filename");
+	public String filenameOriginal(){ //original filename 
+		return (String) data.get("filename") + extension();
 	}
+	public String filename(){
+		return Long.toString((long)data.get("tim")) + extension();
+	}
+	
 	public String url(){
 						//http(s)://i.4cdn.org/board/tim.ext
 		return "https://i.4cdn.org/" + post.thread.getBoard() + "/" + data.get("tim") + extension(); //<<placeholder
 		
+	}
+	
+	public String thumbName(){
+		return Long.toString((long) data.get("tim")) + "s.jpg";
+	}
+	public String thumbUrl(){ //url of the thumbnail
+		return "https://t.4cdn.org/" + post.thread.getBoard() + "/" + data.get("tim") + "s.jpg";
 	}
 
 	public int thumbnailWidth(){
