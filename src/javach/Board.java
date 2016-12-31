@@ -74,14 +74,6 @@ public class Board {
 		String protocol = "https://";
 		private String url;
 		
-		private String title; //Ex: Technology, Fitness
-		private Boolean isWorksafe; //is the board "safe for work"
-		private int pageCount = 0;
-		private int threadsPerPage = 0;
-		private String description; //Ex: /g/ is for hardware and software
-		
-		long lastUpdate = 0;
-		
 		HashMap<Integer, Thread> cache = new HashMap<>();
 		
 		public specBoard(String name){
@@ -121,11 +113,10 @@ public class Board {
 			
 			Thread cachedThread = cache.get(new Integer(id));
 			if(cachedThread == null){ //not cached
-				System.out.println("heyhey " + id);
+				
 			    Thread newThread = new Thread(name, id);
 			    cache.put(id, newThread);
-			    System.out.println(cache.containsKey(new Integer(id)));
-			    System.out.println(cache);
+			    
 			    return cache.get(id);
 			}
 			if(!updateCached){ //just return the cached thread if necessary
@@ -206,59 +197,24 @@ public class Board {
 			return this.url;
 		}
 		
-		public long populate(){ //populate all the fields
-			if(metadata == null) {
-				metadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
-			}
-		    JSONObject jsonObj = metadata; //get data for all boards
-		    JSONArray boards = (JSONArray) jsonObj.get("boards");
-		    JSONObject board = null;
-		    
-		    for (Object o : boards) { //narrow it down to our board
-		        board = (JSONObject) o;
-		        if (board.get("board").equals(name)){
-		            break;
-		        }
-		    }
-		    
-		    isWorksafe = ((long)board.get("ws_board") == 1) ? true: false;
-		    pageCount = (int) (long) board.get("pages");
-		    threadsPerPage = (int) (long) board.get("per_page");
-		    title = (String) board.get("title");
-		    description = (String) board.get("meta_description");
-		    
-		    return lastUpdate;
-		}
 		
-		public boolean isWorksafe(){
-		    if(metadata == null){
-		    	return false;
-		    }
+		
+		public boolean isWorksafe(){ //is this nsfw
+		    //metadata should never be null
 		    return (long) metadata.get("ws_board") == 1;
 		}
-		public int pageCount(){
-		    if(pageCount == 0) {
-		        populate();
-		    }
-		    return pageCount;
+		public int pageCount(){ //how many pages does this board have
+		    return (int)(long) metadata.get("pages");
 		}
-		public int threadsPerPage(){
-		    if(threadsPerPage == 0) {
-		        populate();
-		    }
-		    return threadsPerPage;
+		public int threadsPerPage(){  //max threads per page?
+		    return (int) (long) metadata.get("per_page");
 		}
-		public String title(){
-		    if(title == null) {
-		        populate();
-		    }
-		    return title;
+		public String title(){ //what is the title ex: Fitness
+			return (String) metadata.get("title");
 		}
-		public String description(){
-		    if(description == null) {
-		        populate();
-		    }
-		    return description;
+		public String description(){ //ex:" /fit/ - Fitness is for exercise"
+		   
+		    return (String) metadata.get("meta_description");
 		}
 		
 		public void refreshCache(){

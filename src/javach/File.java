@@ -6,8 +6,8 @@ public class File {
 	//represents a file objects (aka images/webms)
 	//and thumbnails
 	
-	Post post; //parent post 
-	JSONObject data;
+	private Post post; //parent post 
+	private JSONObject data;
 	/*
 	String filename;
 	String md5;     //md5 hash
@@ -70,5 +70,9 @@ public class File {
 	}
 	public int thumbnailHeight(){
 		return (int) (long) data.get("tn_h");
+	}
+	
+	public Post post(){ //note to self - possibly pointless method
+		return post;
 	}
 }
