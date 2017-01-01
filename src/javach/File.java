@@ -6,6 +6,7 @@ public class File {
 	//represents a file objects (aka images/webms)
 	//and thumbnails
 	
+	URL generator = new URL();
 	private Post post; //parent post 
 	private JSONObject data;
 	/*
@@ -54,7 +55,7 @@ public class File {
 	
 	public String url(){
 						//http(s)://i.4cdn.org/board/tim.ext
-		return "https://i.4cdn.org/" + post.thread.getBoard() + "/" + data.get("tim") + extension(); //<<placeholder
+		return URL.fileURL("https://", this);
 		
 	}
 	
@@ -62,7 +63,8 @@ public class File {
 		return Long.toString((long) data.get("tim")) + "s.jpg";
 	}
 	public String thumbUrl(){ //url of the thumbnail
-		return "https://t.4cdn.org/" + post.thread.getBoard() + "/" + data.get("tim") + "s.jpg";
+		return URL.thumbURL("https://", this);
+		
 	}
 
 	public int thumbnailWidth(){

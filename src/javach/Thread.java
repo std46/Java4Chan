@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 
 public class Thread { //represents a 4chan thread
 	
+	URL generator = new URL();
 	JSONArray posts; //array of posts
 	private LinkedList<Post> postCache = new LinkedList<>();
 	
@@ -202,5 +203,15 @@ public class Thread { //represents a 4chan thread
 			}
 		}
 		return thumbnames;
+	}
+	
+	public String url(){
+		return URL.threadURL("https://", this);
+	}
+	public String semanticUrl(){
+		return url() + "/" + semanticSlug();
+	}
+	public String semanticSlug(){
+		return (String) ((JSONObject) posts.get(0)).get("semantic_url");
 	}
 }

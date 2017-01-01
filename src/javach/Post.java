@@ -57,4 +57,12 @@ public class Post { //represents a 4chan post
 	public File getFile(){
 		return file;
 	}
+	
+	//URL related
+	public String url(){
+		return thread.url() + "#p" + data.get("no");
+	}
+	public String semanticUrl(){
+		return thread.semanticUrl() + "#p" + data.get("no");
+	}
 }
