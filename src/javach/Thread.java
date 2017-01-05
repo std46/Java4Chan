@@ -1,6 +1,5 @@
 package javach;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,9 +8,8 @@ import org.json.simple.JSONObject;
 
 public class Thread { //represents a 4chan thread
 	
-	URL generator = new URL();
-	JSONArray posts; //array of posts
-	private LinkedList<Post> postCache = new LinkedList<>();
+	private JSONArray posts; //array of posts
+	private LinkedList<Post> postCache = new LinkedList<>();	//cache of Post objects
 	
 	private String board = ""; //name of the board. ex: a, g, tg
 	private long id; //the thread id
@@ -22,9 +20,6 @@ public class Thread { //represents a 4chan thread
     private boolean imageLimit = false; //has it hit the imagelimit
     
     Post OriginalPost;		//the OP of the thread
-    
-	
-	long lastUpdate = 0;
 	
 	public Thread(String board, long id){
 	    this.id = id;
@@ -40,7 +35,8 @@ public class Thread { //represents a 4chan thread
 	    return board;
 	}
 	
-	private void populate(){ //populate all the metadata of the thread
+	//populate all the metadata of the thread (should be used only once for efficiency)
+	private void populate(){ 
 		JSONObject metadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/" + board + "/thread/" + id + ".json");
 		posts = (JSONArray) metadata.get("posts");
 		
@@ -72,7 +68,8 @@ public class Thread { //represents a 4chan thread
 		OriginalPost = new Post(this, (JSONObject) posts.get(0));
 	}
 	
-	public int refresh(){ //add all new posts needed, returns number of new posts
+	 //add all new posts needed, returns number of new posts, updates metadata
+	public int refresh(){
 		JSONObject metadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/" + board + "/thread/" + id + ".json");
 		posts = (JSONArray) metadata.get("posts");
 		if(posts.size() == postCache.size()) { //no changes
@@ -145,14 +142,16 @@ public class Thread { //represents a 4chan thread
 	    }
 	    return imageLimit;
 	}
-	public int customSpoiler(){ //#custom spoilers
+	
+	@SuppressWarnings("unchecked")
+	public int customSpoiler(){ //amount of custom spoilers
 	    if(posts == null){
 	    	populate();
 	    }
 	    return (int) ((JSONObject) posts.get(0)).getOrDefault("custom_spoiler", 0);
 	}
 	
-	
+	//File related accessors
 	public List<String> thumbUrls(){
 		List<String> urls = new LinkedList<>();
 		for(Post p: postCache){
@@ -205,6 +204,7 @@ public class Thread { //represents a 4chan thread
 		return thumbnames;
 	}
 	
+	//URL accessors
 	public String url(){
 		return URL.threadURL("https://", this);
 	}

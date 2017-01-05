@@ -3,26 +3,11 @@ package javach;
 import org.json.simple.JSONObject;
 
 public class File {
-	//represents a file objects (aka images/webms)
-	//and thumbnails
+	//represents a file objects on a specific post
 	
-	URL generator = new URL();
 	private Post post; //parent post 
-	private JSONObject data;
-	/*
-	String filename;
-	String md5;     //md5 hash
-	String url;		//url of file
-	String extension;  	//file extension. ex: ".jpg"
+	private JSONObject data;	//parent post's data
 	
-	int size;  //filesize in bytes
-	int width;
-	int height;
-	
-	//thumbnail properties
-	int thumbWidth;
-	int thumbHeight;
-	*/
 	public File(Post post){
 		this.post = post;
 		this.data = post.getData();
@@ -34,10 +19,10 @@ public class File {
 	public String extension(){ //extension of the file
 	    return (String) data.get("ext");
 	}
-	public int filesize(){
+	public int filesize(){		//filesize in bytes
 		return (int) (long) data.get("fsize");
 	}
-	public int width(){
+	public int width(){			//in pixels
 		return (int) (long) data.get("w");
 	}
 	public int height(){
@@ -49,17 +34,17 @@ public class File {
 	public String filenameOriginal(){ //original filename 
 		return (String) data.get("filename") + extension();
 	}
-	public String filename(){
+	public String filename(){		//new filename
 		return Long.toString((long)data.get("tim")) + extension();
 	}
 	
-	public String url(){
-						//http(s)://i.4cdn.org/board/tim.ext
+	public String url(){ //format: http(s)://i.4cdn.org/board/tim.ext
+						
 		return URL.fileURL("https://", this);
 		
 	}
 	
-	public String thumbName(){
+	public String thumbName(){	//name of the thumbnail
 		return Long.toString((long) data.get("tim")) + "s.jpg";
 	}
 	public String thumbUrl(){ //url of the thumbnail
@@ -67,7 +52,7 @@ public class File {
 		
 	}
 
-	public int thumbnailWidth(){
+	public int thumbnailWidth(){ //in pixels
 		return (int) (long) data.get("tn_w");
 	}
 	public int thumbnailHeight(){

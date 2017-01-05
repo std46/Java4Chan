@@ -4,9 +4,9 @@ import org.json.simple.JSONObject;
 
 public class Post { //represents a 4chan post
 	
-	private JSONObject data; //the JSONObject for the post
-	Thread thread; //reference to it's thread
-	File file;
+	private JSONObject data; //the JSONObject containing post metadata
+	private Thread thread; //reference to it's thread
+	private File file;	   //reference to it's file
 	
 	public Post(Thread thread, JSONObject data){ 
 		this.data = data;
@@ -17,8 +17,8 @@ public class Post { //represents a 4chan post
 		}
 	}
 	
-	public long getPostID(){ //returns postID
-	    return (long) data.get("no");
+	public int getPostID(){ //returns postID
+	    return (int) (long) data.get("no");
 	}
 	public String getPosterID(){ //returns poster ID (may be null)
 	    
@@ -45,7 +45,7 @@ public class Post { //represents a 4chan post
 	public String date(){   //date and time. ex: 12\/24\/16(Sat)14:10:39
 		return (String) data.get("now");
 	}
-	public JSONObject getData(){
+	public JSONObject getData(){ //returns data as a JSON obj
 		return data;
 	}
 	
@@ -64,5 +64,15 @@ public class Post { //represents a 4chan post
 	}
 	public String semanticUrl(){
 		return thread.semanticUrl() + "#p" + data.get("no");
+	}
+	
+	//misc accessors
+	
+	public Thread containingThread(){
+		return thread;
+	}
+	
+	public File file(){
+		return file;
 	}
 }

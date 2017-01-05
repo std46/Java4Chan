@@ -6,11 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+//Given a JSON endpoint returns either JSONObject or JSONArray
 public class JSONFetcher {
 
 public static Object vomit(String url){
@@ -28,8 +27,8 @@ public static Object vomit(String url){
  	  	
  	  	return o;
     
-	} catch (FileNotFoundException e) {
-		return null;
+	} catch (FileNotFoundException e) { //any exception results in a n ull return
+		return null;					//may be changed as needed
 	} catch (IOException e) {
 		return null;
 	} catch (ParseException e) {

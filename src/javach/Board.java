@@ -5,33 +5,31 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-//board object represents boards
+//General purpose class
 public class Board {
 	
-	static JSONObject Allmetadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
-	static URL urlGenerator = new URL();
-	static boolean cache = true; //default setting
-	static int refresh = 300; //default time for cache to refresh an item in seconds 
+	//automatically retrieved metadata for all boards
+	private static JSONObject Allmetadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
 	
-	public static Object getBoards(List<String> list){ //get specific boards
+	//returns List of Board objects given List of board names
+	public static Object getBoards(List<String> list){  
 		
 		List<specBoard> myList = new LinkedList<>();
 		for (String s : list){
 		    specBoard board = new specBoard(s);
 		    myList.add(board);
-		    
 		}
 		return myList;
 	}
 	
-	public static Object allBoardsJSON(){ //returns the 4chan api's representation of all boards
+	public static Object allBoardsJSON(){ //returns the 4chan api's JSON representation of all boards
 		if(Allmetadata == null) {
 			Allmetadata = (JSONObject) JSONFetcher.vomit("https://a.4cdn.org/boards.json");
 		}
 	    return Allmetadata;
 	}
 	
-	public static List<specBoard> allBoards(){ //list of all boards
+	public static List<specBoard> allBoards(){ //returns List of all boards
 		
 		LinkedList<specBoard> boardsList = new LinkedList<>();
 		
@@ -46,9 +44,9 @@ public class Board {
 	    return boardsList;
 	}
 	
-	public static List getAllThreadIds(String id){ //list of all threads in board
+	public static List<Integer> getAllThreadIds(String id){ //Returns list of all thread IDs given board name
 	    
-		LinkedList<Long> threadIDs = new LinkedList<>();
+		LinkedList<Integer> threadIDs = new LinkedList<>();
 		specBoard board = new specBoard(id);
         JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(board.getURL() + "/threads.json");
         for(Object o: jsonobj) {
@@ -56,37 +54,33 @@ public class Board {
             JSONArray pageArray = (JSONArray) page.get("threads");
             for (Object t: pageArray) {
             	JSONObject thread = (JSONObject) t;
-                threadIDs.add((Long) thread.get("no"));
+                threadIDs.add((int)(long) thread.get("no"));
             }
         }
         return threadIDs;
 		
 	}
 	
-	public static void cache(boolean decision) { //should cache be used? default is true
-		cache = decision;
-	}
-	
-	public static class specBoard { //represents 4chan board
+	public static class specBoard { //inner class representing individual board
 		
-		JSONObject metadata;
-		private String name; //the name. ex: g, fit, etc
-		String protocol = "https://";
+		JSONObject metadata;	//will contain the board metadata
+		private String name; 	//the name. ex: g, fit, etc
+		String protocol = "https://";	
 		private String url;
 		
-		HashMap<Integer, Thread> cache = new HashMap<>();
+		HashMap<Integer, Thread> cache = new HashMap<>();	//constant cache of threads
 		
 		public specBoard(String name){
 		    this(true, name);	
 		}
 		
-		public specBoard(boolean https, String name){
+		public specBoard(boolean https, String name){ //given protocol and name of board
 		    
 			if(!https) { //swap protocols if necessary
 			    protocol = "http://";
 			}
 		    this.name = name;
-		    this.url = urlGenerator.boardURL(protocol, name);
+		    this.url = URL.boardURL(protocol, name);
 		    
 		    JSONObject jsonObj = Allmetadata; //get data for all boards
 		    JSONArray boards = (JSONArray) jsonObj.get("boards");
@@ -99,8 +93,11 @@ public class Board {
 		    }
 		}
 		
-		public boolean hasThread(long id) { //checks if thread exists or no
+		public boolean hasThread(int id) { //checks if thread currently exists on the board
 		    JSONObject value = (JSONObject)JSONFetcher.vomit(url + "/thread/" + id + ".json");
+		    if (value == null){
+		    	return false;
+		    }
 		    if (value.containsKey("closed")){
 		    	if ((int)value.get("closed") == 1){
 		    		return false;
@@ -109,7 +106,7 @@ public class Board {
 		    return true;
 		}
 		
-		public Thread getThread(int id, boolean updateCached){
+		public Thread getThread(int id, boolean updateCached){ //returns thread object, updates cache if needed
 			
 			Thread cachedThread = cache.get(new Integer(id));
 			if(cachedThread == null){ //not cached
@@ -133,7 +130,7 @@ public class Board {
 			return newThread;
 		}
 		
-		public List<Thread> getThreads(){ //default value is 1
+		public List<Thread> getThreads(){ //returns List of threads on page 1 (default setting)
 		    return getThreads(1);
 		}
 		public List<Thread> getThreads(int page){  //get all threads on specific page
@@ -152,7 +149,7 @@ public class Board {
 			return myList;
 		}
 		
-		public List<Thread> getAllThreads(){//list of all thread objects
+		public List<Thread> getAllThreads(){	//list of all thread objects in board
 			List<Thread> myList = new LinkedList<>();
 			JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(url + "/threads.json");
 	        for(Object o: jsonobj) {
@@ -176,15 +173,15 @@ public class Board {
 			
 		}
 		
-	    public List getAllThreadIds(){ //get list of all thread id's
-	        LinkedList threadIDs = new LinkedList();
+	    public List<Integer> getAllThreadIds(){ //get list of all thread id's
+	        LinkedList<Integer> threadIDs = new LinkedList<>();
 	        JSONArray jsonobj = (JSONArray) JSONFetcher.vomit(url + "/threads.json");
 	        for(Object o: jsonobj) {
 	            JSONObject page = (JSONObject) o;
 	            JSONArray pageArray = (JSONArray) page.get("threads");
 	            for (Object t: pageArray) {
 	            	JSONObject thread = (JSONObject) t;
-	                threadIDs.add(thread.get("no"));
+	                threadIDs.add((int) (long) thread.get("no"));
 	            }
 	        }
 	        return threadIDs;
