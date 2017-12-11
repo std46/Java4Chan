@@ -14,26 +14,25 @@ import org.json.simple.parser.ParseException;
 
 //Given a JSON endpoint returns either JSONObject or JSONArray
 public class JSONFetcher {
+	private static String proxyUrl;
+	private static Integer proxyPort;
 
-	public static Object vomit(String url){
-		return gobble (url, null, null);
-	} 
-
-	public static Object vomit(String url, String proxy, Integer proxyPort){
-		return gobble (url, proxy, proxyPort);
-	}  
+	public static void setProxy(String url, Integer port) {
+		proxyUrl = url;
+		proxyPort = port;
+	}
 	
-	private static Object gobble (String url, String proxy, Integer proxyPort){
+	public static Object vomit (String url){
 		JSONParser parser = new JSONParser();
 		URLConnection yc = null;
 		Object o = null;
 		
 		try {
 			URL oracle = new URL(url); // URL to Parse
-			if (null == proxy) {
+			if (null == proxyUrl) {
 				yc = oracle.openConnection();
 			} else {
-				Proxy p = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxy, proxyPort));
+				Proxy p = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl, proxyPort));
 				yc = oracle.openConnection(p);
 			}
 		} catch (IOException e) {

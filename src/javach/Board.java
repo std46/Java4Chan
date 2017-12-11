@@ -223,5 +223,23 @@ public class Board {
 		public void clearCache(){
 			cache = new HashMap<Integer, Thread>();
 		}
+
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			if (null != this.name) {
+				builder.append(this.name);
+				builder.append(" ");
+			}
+			if (null != title()) {
+				builder.append(title());
+				builder.append(" ");
+			}
+			if (null != this.url) {
+				builder.append(" (");
+				builder.append(this.url);
+				builder.append(")");
+			}
+			return builder.toString();
+		}
 	}
 }
