@@ -6,7 +6,7 @@ Snapshots on [Jitpack]((https://jitpack.io/#iSnow/Java4Chan)
 This is the source code for a current WIP library for the 4chan API, forked from https://github.com/camelKaiser/JavaCh. 
 Feel free to download and test with the current limited functionality. (Currently as of 2016-12-29)
 
-##How do I use this?
+## How do I use this?
 First, add the Jitpack repo:
 
 	<repositories>
@@ -24,7 +24,7 @@ Then import in your pom.xml
 	    <version>-SNAPSHOT</version>
 	</dependency>
 
-##How do I test this?
+##  How do I test this?
 Two tests or so exist. 
 
 ##Documentation
