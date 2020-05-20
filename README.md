@@ -1,6 +1,6 @@
 # Java Library for 4chan
 
-Snapshots on [Jitpack]((https://jitpack.io/#iSnow/Java4Chan)
+Snapshots on [Jitpack](https://jitpack.io/#iSnow/Java4Chan)
 
 [![](https://jitpack.io/v/iSnow/Java4Chan)](https://jitpack.io/#iSnow/Java4Chan)
 
