@@ -1,6 +1,7 @@
 # Java Library for 4chan
 
 Snapshots on [Jitpack]((https://jitpack.io/#iSnow/Java4Chan)
+
 [![](https://jitpack.io/v/iSnow/Java4Chan)](https://jitpack.io/#iSnow/Java4Chan)
 
 This is the source code for a current WIP library for the 4chan API, forked from https://github.com/camelKaiser/JavaCh. 
