@@ -87,6 +87,8 @@ public class Thread { //represents a 4chan thread
 	}
 
 	public Post getOriginalPost() {
+		if (postCache.size() == 0)
+			return null;
 		return postCache.get(0);
 	}
 
