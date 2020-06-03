@@ -102,10 +102,6 @@ public class Thread { //represents a 4chan thread
 		return foundPost != null;
 	}
 
-	public String board(){
-		return board;
-	}
-
 	public boolean isClosed(){
 		init();
 		return getOriginalPost().isClosed();
@@ -118,6 +114,7 @@ public class Thread { //represents a 4chan thread
 	public long getId(){
 		return getOriginalPost().getId().longValue();
 	}
+
 	public boolean is404(){
 		init();
 	    return is404;
