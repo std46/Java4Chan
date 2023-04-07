@@ -44,6 +44,9 @@ public class Board {
     @JsonProperty("user_ids")
     private boolean userIds;
 
+    @JsonProperty("board_flags")
+    private Map<String, String> boardFlags;
+
     @JsonProperty("country_flags")
     private boolean countryFlags;
 
@@ -231,3 +234,4 @@ public class Board {
     }
 
 }
+
