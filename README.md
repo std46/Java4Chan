@@ -20,7 +20,7 @@ First, add the Jitpack repo:
 Then import in your pom.xml
 
 	<dependency>
-	    <groupId>com.github.iSnow</groupId>
+	    <groupId>com.github.std46</groupId>
 	    <artifactId>java4chan</artifactId>
 	    <version>-SNAPSHOT</version>
 	</dependency>
