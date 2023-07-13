@@ -35,7 +35,6 @@ public class File {
 	@JsonProperty("filedeleted")
 	private boolean deleted;
 
-	@JsonIgnore
 	private Post post; //parent post
 
 	File() {}
